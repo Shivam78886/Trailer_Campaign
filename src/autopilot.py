@@ -131,16 +131,6 @@ class CampaignAutopilot:
         )
         
         # Step 6b: AI-enhance with Gemini (if available)
-        print(f"   🔍 DEBUG: self.gemini_enhancer = {self.gemini_enhancer}")
-        if self.gemini_enhancer:
-            print(f"   🔍 DEBUG: gemini_enhancer.is_available() = {self.gemini_enhancer.is_available()}")
-            print(f"   🔍 DEBUG: gemini_enhancer.model = {self.gemini_enhancer.model}")
-            print(f"   🔍 DEBUG: gemini_enhancer.api_key = {'YES' if self.gemini_enhancer.api_key else 'NO'}")
-        else:
-            print(f"   🔍 DEBUG: Gemini enhancer is None!")
-            print(f"   🔍 DEBUG: Config.has_gemini() = {Config.has_gemini()}")
-            print(f"   🔍 DEBUG: Config.GEMINI_API_KEY = {'YES' if Config.GEMINI_API_KEY else 'NO'}")
-        
         if self.gemini_enhancer and self.gemini_enhancer.is_available():
             print("   🤖 Enhancing with Gemini AI...")
             try:
@@ -155,10 +145,6 @@ class CampaignAutopilot:
                     print(f"   ⚠️  AI enhancement returned no variants")
             except Exception as e:
                 print(f"   ⚠️  AI enhancement failed: {e}")
-                import traceback
-                traceback.print_exc()
-        else:
-            print("   ⚠️  Skipping AI enhancement (not available)")
         
         campaign['ad_copy'] = ad_copy
         print(f"   ✓ Generated {len(ad_copy.get('variants', []))} base variants")

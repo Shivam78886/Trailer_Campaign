@@ -86,14 +86,7 @@ def generate_campaign():
             generation_status[job_id]['message'] = 'Analyzing trailer...'
             generation_status[job_id]['progress'] = 10
             
-            # Debug: Check if Gemini is configured
-            print(f"🔍 DEBUG: Gemini API Key configured: {bool(Config.GEMINI_API_KEY)}")
-            print(f"🔍 DEBUG: has_gemini(): {Config.has_gemini()}")
-            
             autopilot = CampaignAutopilot()
-            print(f"🔍 DEBUG: Autopilot gemini_enhancer: {autopilot.gemini_enhancer}")
-            if autopilot.gemini_enhancer:
-                print(f"🔍 DEBUG: Gemini enhancer is_available(): {autopilot.gemini_enhancer.is_available()}")
             
             generation_status[job_id]['message'] = 'Collecting metadata...'
             generation_status[job_id]['progress'] = 20

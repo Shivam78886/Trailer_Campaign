@@ -1,52 +1,157 @@
 # Trailer-to-Campaign Autopilot 🎬
 
-**Turn film/series trailer signals into grounded marketing campaigns—automatically.**
+**Transform movie trailers into data-driven marketing campaigns with AI-powered content generation.**
 
-## Overview
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Flask](https://img.shields.io/badge/flask-2.3+-green.svg)](https://flask.palletsprojects.com/)
+[![Gemini AI](https://img.shields.io/badge/Gemini-AI-purple.svg)](https://ai.google.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-This system analyzes public signals from movie/OTT trailers and generates:
-- **Ad Copy** with source citations
-- **Email & Social Posts** tailored to platforms
-- **Thumbnail/Storyboard Concepts** with visual descriptions
-- **Regional Rollout Plans** prioritized by engagement data
+## 🎯 What It Does
 
-All outputs are **trace-linked to sources** (comments, trends, pageviews, metadata).
+This system analyzes movie/OTT trailers from YouTube and generates complete marketing campaigns including:
 
-## Data Sources
+- 🎨 **AI-Enhanced Ad Copy** (5+ variants optimized by Gemini)
+- 📱 **Social Media Posts** (Twitter, Instagram, Facebook, TikTok)
+- 🌍 **Regional Rollout Plans** (6-week phased strategy)
+- 📊 **Market Analysis** (sentiment, trends, engagement metrics)
+- 💡 **Strategic Insights** (AI-powered opportunities & recommendations)
+- 🔗 **Source Tracing** (every claim linked to data)
 
-| Source | Purpose | API/Library |
-|--------|---------|-------------|
-| **TMDb** | Movie metadata, cast, images | `requests` |
-| **YouTube Data API** | Trailer comments, engagement | `google-api-python-client` |
-| **Wikipedia Pageviews** | Daily attention spikes by region | `requests` |
-| **Google Trends** | Topic/region interest over time | `pytrends` |
-| **Open-Meteo** | Weather timing for outdoor promos | `requests` |
+**All outputs are grounded in real data** from YouTube comments, TMDb metadata, Google Trends, and Wikipedia pageviews.
 
-## Features
+---
 
-### 🔍 Signal Analysis
-- Sentiment analysis of YouTube comments
-- Wikipedia pageview trend detection
-- Google Trends regional interest scoring
-- Engagement metrics correlation
+## ✨ Key Features
 
-### 📝 Content Generation
-- **Ad Copy**: Multiple variants (short, long, CTA-focused)
-- **Social Posts**: Platform-optimized (Twitter, Instagram, Facebook)
-- **Email Campaigns**: Subject lines + body templates
-- **Thumbnail Concepts**: Visual descriptions with mood boards
+### 🖥️ Modern Web Interface
+- **Responsive Design**: Works on desktop, tablet, and mobile
+- **Real-time Progress**: Watch campaign generation step-by-step
+- **Campaign Management**: Browse and reload previous campaigns
+- **AI Enhancement**: Powered by Google Gemini for creative content
 
-### 🌍 Regional Intelligence
-- Geographic prioritization based on interest scores
-- Language/cultural considerations
-- Release timing optimization
-- Market-specific messaging suggestions
+### 🤖 AI-Powered Content
+- **Gemini Integration**: Enhanced ad copy and strategic insights
+- **Sentiment Analysis**: VADER + TextBlob for audience sentiment
+- **Trend Detection**: Momentum and spike detection
+- **Regional Scoring**: Intelligent market prioritization
 
-### 🔗 Source Tracing
-Every generated asset includes:
-- Source citations (comment IDs, trend data, metadata)
-- Confidence scores
-- Supporting evidence snippets
+### 📊 Multi-Source Data Collection
+
+| Source | Purpose | Data Collected |
+|--------|---------|----------------|
+| **TMDb** | Movie metadata | Cast, genres, ratings, budget, images |
+| **YouTube** | Engagement | Views, likes, comments, sentiment |
+| **Wikipedia** | Public interest | Pageview trends by region |
+| **Google Trends** | Search trends | Regional interest over time |
+| **Gemini AI** | Content enhancement | Creative ad copy, strategic insights |
+
+### 🎯 Smart Campaign Generation
+- **6-Week Rollout Plan**: Phased regional strategy
+- **Budget Allocation**: Data-driven budget distribution
+- **Platform Optimization**: Tailored content for each social platform
+- **Source Citations**: Every claim linked to original data
+- **Graceful Degradation**: Works even if some APIs fail
+
+---
+
+## 🚀 Quick Start
+
+### Installation (3 Steps)
+
+```bash
+# 1. Clone and navigate
+git clone https://github.com/anubhav-77-dev/t2a.git
+cd t2a
+
+# 2. Set up Python environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+# 3. Configure API keys
+cp .env.example .env
+# Edit .env and add your API keys
+```
+
+### Launch Web Interface
+
+```bash
+# Activate virtual environment
+source venv/bin/activate
+
+# Start server
+python web/app.py
+
+# Open browser to http://localhost:8080
+```
+
+**Full installation guide:** [INSTALLATION.md](INSTALLATION.md)
+
+---
+
+## 🎬 Screenshots
+
+### Web Interface
+![Web UI](https://via.placeholder.com/800x400/667eea/ffffff?text=Campaign+Generation+Form)
+*Modern, responsive interface for campaign generation*
+
+### Real-time Progress
+![Progress Tracking](https://via.placeholder.com/800x400/764ba2/ffffff?text=Real-time+Progress+Tracking)
+*Watch as your campaign is built step-by-step*
+
+### AI-Enhanced Results
+![Campaign Results](https://via.placeholder.com/800x400/10b981/ffffff?text=AI-Enhanced+Campaign+Results)
+*Comprehensive results with AI insights*
+
+---
+
+## 📖 Usage
+
+### Web Interface (Recommended)
+
+1. **Start Server**: `python web/app.py`
+2. **Open Browser**: Go to `http://localhost:8080`
+3. **Enter Details**:
+   - Paste YouTube trailer URL
+   - Enter movie title
+   - (Optional) Specify target regions
+4. **Generate**: Click "Generate Campaign"
+5. **View Results**: See AI-enhanced content, social posts, rollout plan, and insights
+
+### Command Line Interface
+
+```bash
+# Generate campaign
+python main.py generate \
+  --url "https://www.youtube.com/watch?v=VIDEO_ID" \
+  --title "Movie Title"
+
+# With custom regions
+python main.py generate \
+  --url "https://www.youtube.com/watch?v=VIDEO_ID" \
+  --title "Movie Title" \
+  --regions US,UK,IN,CA,AU
+
+# View campaigns
+python main.py show
+
+# Check configuration
+python main.py config-check
+```
+
+---
+
+## 🔑 API Keys Required
+
+### Essential (Free)
+- **TMDb API**: https://www.themoviedb.org/settings/api
+- **YouTube Data API**: https://console.cloud.google.com/apis/library/youtube.googleapis.com
+
+### Optional (Recommended)
+- **Google Gemini AI**: https://makersuite.google.com/app/apikey (for AI enhancement)
+
+See [INSTALLATION.md](INSTALLATION.md) for detailed setup instructions.
 
 ## Installation
 

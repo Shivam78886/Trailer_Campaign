@@ -6,6 +6,7 @@ Modern Flask-based interface for generating marketing campaigns
 
 import sys
 import os
+import io
 from pathlib import Path
 
 # Add parent directory to path
@@ -23,6 +24,7 @@ import threading
 
 from src.autopilot import CampaignAutopilot
 from src.utils.config import Config
+from src.utils.export_pack import ExportPackBuilder
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'trailer-to-campaign-autopilot-2025'
@@ -175,6 +177,36 @@ def get_campaign(filename):
         return jsonify(data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/export/<filename>')
+def download_export_pack(filename):
+    """Create and download an export pack for the campaign."""
+    outputs_dir = Path(__file__).parent.parent / 'outputs'
+    file_path = outputs_dir / filename
+    
+    if not file_path.exists():
+        return jsonify({'error': 'Campaign not found'}), 404
+    
+    try:
+        with open(file_path) as f:
+            data = json.load(f)
+    except Exception as exc:
+        return jsonify({'error': str(exc)}), 500
+    
+    builder = ExportPackBuilder(data)
+    zip_bytes = builder.build_bytes()
+    
+    movie_title = data.get('movie_data', {}).get('title', 'campaign')
+    safe_title = ''.join(c for c in movie_title if c.isalnum() or c in (' ', '_', '-')).strip().replace(' ', '_') or 'campaign'
+    download_name = f"{safe_title}_export_pack.zip"
+    
+    return send_file(
+        io.BytesIO(zip_bytes),
+        mimetype='application/zip',
+        as_attachment=True,
+        download_name=download_name
+    )
 
 
 @app.route('/view/<filename>')

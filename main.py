@@ -7,6 +7,7 @@ from datetime import datetime
 
 from src.autopilot import CampaignAutopilot
 from src.utils.config import Config
+from src.utils.export_pack import ExportPackBuilder
 
 
 @click.group()
@@ -185,6 +186,22 @@ def _show_rollout(campaign: dict):
         click.echo(f"  Start: {phase['start_date']}")
         click.echo(f"  Regions: {', '.join(phase['regions'])}")
         click.echo(f"  Budget: {phase['budget_percentage']}%")
+    
+    plan_logic = rollout.get('plan_logic', {})
+    if plan_logic:
+        click.echo("\n\nLogic Behind Budget & Duration:")
+        budget_logic = plan_logic.get('budget', {})
+        duration_logic = plan_logic.get('duration', {})
+        
+        if budget_logic:
+            click.echo(f"\nBudget: {budget_logic.get('summary', '').strip()}")
+            for driver in budget_logic.get('drivers', []):
+                click.echo(f"  - {driver}")
+        
+        if duration_logic:
+            click.echo(f"\nDuration: {duration_logic.get('summary', '').strip()}")
+            for driver in duration_logic.get('drivers', []):
+                click.echo(f"  - {driver}")
 
 
 @cli.command()
@@ -212,6 +229,24 @@ def config_check():
     else:
         click.echo("\n⚠️  Some required API keys are missing.")
         click.echo("Please update your .env file. See .env.example for reference.")
+
+
+@cli.command()
+@click.argument('campaign_file', type=click.Path(exists=True))
+@click.option('--output', '-o', help='Output ZIP path for the export pack')
+def export_pack(campaign_file, output):
+    """Create a zipped export pack of campaign assets."""
+    with open(campaign_file, 'r') as f:
+        campaign = json.load(f)
+    
+    title = campaign.get('movie_data', {}).get('title', 'campaign')
+    safe_title = ''.join(c for c in title if c.isalnum() or c in (' ', '_', '-')).strip().replace(' ', '_')
+    output_path = output or f"outputs/{safe_title or 'campaign'}_export_pack.zip"
+    
+    builder = ExportPackBuilder(campaign)
+    builder.build(output_path)
+    
+    click.echo(f"\n📦 Export pack created: {output_path}")
 
 
 if __name__ == '__main__':

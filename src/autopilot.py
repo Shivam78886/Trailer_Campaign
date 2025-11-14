@@ -327,8 +327,8 @@ class CampaignAutopilot:
         return self.rollout_planner.create_rollout_plan(
             regional_data,
             movie_data.get('release_date', '2024-12-31'),
-            budget_total=1000000,
-            campaign_weeks=6
+            movie_profile=movie_data,
+            precomputed_comparison=regional_results
         )
     
     def _generate_insights(self, campaign: Dict[str, Any]) -> Dict[str, Any]:

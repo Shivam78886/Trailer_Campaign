@@ -20,9 +20,17 @@
                         <h1 id="movie-title" class="text-3xl font-bold text-gray-900"></h1>
                         <p id="generated-at" class="mt-1 text-sm text-gray-500"></p>
                     </div>
-                    <a href="/" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700">
-                        Generate New Campaign
-                    </a>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <a id="export-pack-btn"
+                           href="/api/export/{{ filename }}"
+                           class="inline-flex items-center justify-center px-4 py-2 border border-purple-200 rounded-md shadow-sm text-sm font-medium text-purple-700 bg-white hover:bg-purple-50">
+                            Download Export Pack
+                        </a>
+                        <a href="/"
+                           class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700">
+                            Generate New Campaign
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -251,6 +259,59 @@ function renderCampaign(data) {
     const rollout = data.rollout_plan || {};
     const timeline = rollout.timeline || [];
     const overview = rollout.campaign_overview || {};
+    const planLogic = rollout.plan_logic || rollout.budget_duration_logic || {};
+    const formatDriversList = (drivers = []) => {
+        if (!drivers || drivers.length === 0) {
+            return '<li class="text-sm text-gray-400">No specific drivers captured</li>';
+        }
+        return drivers.map(driver => `<li class="text-sm text-gray-700">${driver}</li>`).join('');
+    };
+    const signalLabels = {
+        tier_a_markets: 'Tier-A markets',
+        tier_b_markets: 'Tier-B markets',
+        interest_index: 'Interest score',
+        popularity: 'Popularity',
+        release_gap_weeks: 'Weeks to release'
+    };
+    const budgetLogic = planLogic.budget || {};
+    const durationLogic = planLogic.duration || {};
+    const signals = planLogic.signals || {};
+    const logicBlock = (budgetLogic.summary || durationLogic.summary || Object.keys(signals).length)
+        ? `
+            <div class="bg-white rounded-lg shadow p-6 mb-4 border border-purple-100">
+                <h3 class="text-lg font-semibold text-purple-900 mb-2">Budget & Duration Rationale</h3>
+                ${planLogic.summary ? `<p class="text-sm text-gray-600 mb-4">${planLogic.summary}</p>` : ''}
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 tracking-wide uppercase">Budget Logic</p>
+                        <p class="text-base text-gray-900 font-medium mt-1">${budgetLogic.summary || 'Budget derived from market demand signals.'}</p>
+                        <ul class="mt-2 space-y-1 list-disc list-inside">
+                            ${formatDriversList(budgetLogic.drivers || [])}
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 tracking-wide uppercase">Duration Logic</p>
+                        <p class="text-base text-gray-900 font-medium mt-1">${durationLogic.summary || 'Timeline tuned to the release window.'}</p>
+                        <ul class="mt-2 space-y-1 list-disc list-inside">
+                            ${formatDriversList(durationLogic.drivers || [])}
+                        </ul>
+                    </div>
+                </div>
+                ${Object.keys(signals).length ? `
+                    <div class="mt-4 border-t pt-4">
+                        <p class="text-xs font-semibold text-gray-500 tracking-wide uppercase mb-2">Key Signals</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                            ${Object.entries(signals).map(([key, value]) => `
+                                <div class="bg-purple-50 rounded-lg p-3">
+                                    <p class="text-purple-800 font-semibold">${signalLabels[key] || key}</p>
+                                    <p class="text-gray-900">${value}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+        ` : '';
     const rolloutContainer = document.getElementById('rollout-plan');
     rolloutContainer.innerHTML = `
         <div class="bg-white rounded-lg shadow p-6 mb-4">
@@ -280,13 +341,14 @@ function renderCampaign(data) {
                 </div>
                 <div class="space-y-2">
                     ${week.active_regions?.length ? `<div><strong>Regions:</strong> ${week.active_regions.join(', ')}</div>` : ''}
-                    <div><strong>Activities:</strong></div>
-                    <ul class="list-disc list-inside pl-4 space-y-1">
-                        ${week.key_activities.map(a => `<li class="text-sm text-gray-700">${a}</li>`).join('')}
-                    </ul>
-                </div>
+                <div><strong>Activities:</strong></div>
+                <ul class="list-disc list-inside pl-4 space-y-1">
+                    ${week.key_activities.map(a => `<li class="text-sm text-gray-700">${a}</li>`).join('')}
+                </ul>
             </div>
+        </div>
         `).join('')}
+        ${logicBlock}
     `;
     
     // AI Insights
